@@ -1,0 +1,35 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo_database
+    environment:
+      MONGO_INITDB_DATABASE: graphql
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_database:/data/db
+    networks:
+      - graphql
+
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - 8080:8080
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - mongodb
+    networks:
+      - graphql
+
+volumes:
+  api:
+  mongo_database:
+
+networks:
+  graphql:
